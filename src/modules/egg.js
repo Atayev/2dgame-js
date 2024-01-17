@@ -1,3 +1,5 @@
+import Larva from "./larva.js";
+
 export default class Egg {
   constructor(game) {
     this.game = game;
@@ -17,6 +19,9 @@ export default class Egg {
     this.width = this.spriteWidth * 0.5;
     this.spriteX;
     this.spriteY;
+    this.hatchTimer = 0;
+    this.hatchInterval = 5000;
+    this.markedForDeletion = false;
   }
 
   draw(context) {
@@ -35,12 +40,22 @@ export default class Egg {
       context.fill();
       context.restore();
       context.stroke();
+      const displayTimer = (this.hatchTimer * 0.001).toFixed(0);
+      context.fillText(
+        displayTimer,
+        this.collisionX,
+        this.collisionY - this.collisionRadius * 2.5
+      );
     }
   }
-  update() {
+  update(deltaTime) {
     this.spriteX = this.collisionX - this.width * 0.5 - 30;
     this.spriteY = this.collisionY - this.height * 0.5 - 50;
-    let collisionObjects = [this.game.player, ...this.game.obstacles];
+    let collisionObjects = [
+      this.game.player,
+      ...this.game.obstacles,
+      ...this.game.enemies,
+    ];
     collisionObjects.forEach((object) => {
       let [collision, distance, sumOfRadii, dx, dy] = this.game.checkCollision(
         this,
@@ -55,5 +70,18 @@ export default class Egg {
         this.collisionY = object.collisionY + unit_y * (sumOfRadii + 1);
       }
     });
+
+    if (
+      this.hatchTimer > this.hatchInterval ||
+      this.collisionY < this.game.topMargin
+    ) {
+      this.game.hatchLings.push(
+        new Larva(this.game, this.collisionX, this.collisionY)
+      );
+      this.markedForDeletion = true;
+      this.game.removeGameObject();
+    } else {
+      this.hatchTimer += deltaTime;
+    }
   }
 }

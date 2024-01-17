@@ -8,8 +8,9 @@ window.addEventListener("load", function () {
   canvas.height = 720; //window.innerHeight;
   ctx.fillStyle = "white";
   ctx.lineWidth = 3;
-  ctx.strokeStyle = "white";
-
+  ctx.strokeStyle = "black";
+  ctx.font = "30px Helvetica";
+  ctx.textAlign = "center";
   const game = new Game(canvas);
   game.initObstacles();
   console.log(game);
@@ -21,6 +22,7 @@ window.addEventListener("load", function () {
     lastTime = timeStamp;
     // ctx.clearRect(0, 0, canvas.width, canvas.height);
     game.render(ctx, deltaTime);
+
     requestAnimationFrame(animate);
   }
 
