@@ -1,9 +1,9 @@
-\*Bullseye game
+# Bullseye game
 
-\*\*To install
+## To install
 
 - git clone
 - npm install
 - npm start
 
-\*\*\* Play with mouse
+### Play with mouse
